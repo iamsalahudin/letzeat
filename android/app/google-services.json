@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1025895290579",
+    "project_id": "letzeat-719fc",
+    "storage_bucket": "letzeat-719fc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1025895290579:android:3c81fd0742234c2df6a626",
+        "android_client_info": {
+          "package_name": "com.example.letzeat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSO8QAQI-cE3NvYweFWnYdkUPFRFe5z_M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
