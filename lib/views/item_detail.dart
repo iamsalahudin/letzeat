@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:letzeat/provider/fav_provider.dart';
 import 'package:letzeat/provider/quantity.dart';
-import 'package:letzeat/utils/constant.dart';
 import 'package:letzeat/widgets/icon_button.dart';
 import 'package:letzeat/widgets/quantity.dart';
 import 'package:provider/provider.dart';
