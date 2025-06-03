@@ -60,17 +60,14 @@ class _RecipeDetailState extends State<RecipeDetail> {
                   ),
                 ),
                 Positioned(
-                  top: 40,
+                  top: 20,
                   left: 10,
-                  right: 10,
                   child: Row(
                     children: [
                       MyIconButton(
                         icon: Icons.arrow_back,
                         pressed: () => Navigator.pop(context),
                       ),
-                      Spacer(),
-                      MyIconButton(icon: Iconsax.notification, pressed: () {}),
                     ],
                   ),
                 ),
@@ -289,45 +286,18 @@ class _RecipeDetailState extends State<RecipeDetail> {
   }
 
   FloatingActionButton startCookingSection(FavoriteProvider provider) {
-    return FloatingActionButton.extended(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      onPressed: () {},
-      label: Row(
-        children: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: kPrimaryColor,
-              padding: EdgeInsets.symmetric(horizontal: 100, vertical: 13),
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () {},
-            child: Text(
-              "Start Cooking",
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(width: 10),
-          IconButton(
-            style: IconButton.styleFrom(
-              shape: CircleBorder(
-                side: BorderSide(color: Colors.grey.shade300, width: 2),
-              ),
-            ),
-            onPressed: () {
-              provider.toggleFavorite(widget.documentSnapshot);
-            },
-            icon: Icon(
-              color:
-                  provider.isFavorite(widget.documentSnapshot)
-                      ? Colors.redAccent
-                      : Colors.black,
-              provider.isFavorite(widget.documentSnapshot)
-                  ? Iconsax.heart5
-                  : Iconsax.heart,
-            ),
-          ),
-        ],
+    return FloatingActionButton(
+      onPressed: () {
+        provider.toggleFavorite(widget.documentSnapshot);
+      },
+      child: Icon(
+        provider.isFavorite(widget.documentSnapshot)
+            ? Iconsax.heart5
+            : Iconsax.heart,
+        color:
+            provider.isFavorite(widget.documentSnapshot)
+                ? Colors.redAccent
+                : Colors.black,
       ),
     );
   }

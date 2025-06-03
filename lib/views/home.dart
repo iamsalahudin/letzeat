@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:letzeat/utils/constant.dart';
+import 'package:letzeat/views/search_items.dart';
 import 'package:letzeat/views/view_all_items.dart';
 import 'package:letzeat/widgets/banner.dart';
-import 'package:letzeat/widgets/icon_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:letzeat/widgets/item_card.dart';
 
@@ -181,6 +181,7 @@ class _HomeState extends State<Home> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 22),
       child: TextField(
+        controller: TextEditingController(), // Add a controller for clearing
         decoration: InputDecoration(
           filled: true,
           prefixIcon: Icon(Iconsax.search_normal, color: Colors.grey),
@@ -197,24 +198,31 @@ class _HomeState extends State<Home> {
             borderSide: BorderSide.none,
           ),
         ),
+        onSubmitted: (value) {
+          if (value.trim().isNotEmpty) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SearchItems(query: value.trim()),
+              ),
+            );
+            // Clear the input after search
+            Future.delayed(Duration(milliseconds: 100), () {
+              (FocusScope.of(context).focusedChild?.context?.widget
+                      as EditableText?)
+                  ?.controller
+                  .clear();
+            });
+          }
+        },
       ),
     );
   }
 
-  Row headerParts() {
-    return Row(
-      children: [
-        const Text(
-          'What are you\ncooking today?',
-          style: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            height: 1,
-          ),
-        ),
-        const Spacer(),
-        MyIconButton(icon: Iconsax.notification, pressed: () {}),
-      ],
+  Text headerParts() {
+    return Text(
+      'What are you\ncooking today?',
+      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1),
     );
   }
 }

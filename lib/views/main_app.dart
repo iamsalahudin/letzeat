@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:letzeat/utils/constant.dart';
+import 'package:letzeat/views/chat_bot.dart';
 import 'package:letzeat/views/favorite.dart';
 import 'package:letzeat/views/home.dart';
+import 'package:letzeat/views/meal_plan.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -16,12 +18,7 @@ class _MainAppState extends State<MainApp> {
   late final List<Widget> page;
   @override
   void initState() {
-    page = [
-      const Home(),
-      const Favorite(),
-      navBarPage(Iconsax.calendar5),
-      navBarPage(Iconsax.setting_21),
-    ];
+    page = [const Home(), const Favorite(), const MealPlan(), ChatBotPage()];
     super.initState();
   }
 
@@ -67,9 +64,11 @@ class _MainAppState extends State<MainApp> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              selectedIndex == 3 ? Iconsax.setting_21 : Iconsax.setting_2,
+              selectedIndex == 3
+                  ? Icons.chat_bubble
+                  : Icons.chat_bubble_outline,
             ),
-            label: 'Settings',
+            label: 'My AI',
           ),
         ],
       ),

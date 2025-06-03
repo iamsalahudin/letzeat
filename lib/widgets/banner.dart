@@ -16,38 +16,16 @@ class BannerToExplore extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            top: 32,
+            top: 50,
             left: 20,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Cook the best\nrecipes at home',
-                  style: TextStyle(
-                    height: 1.1,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 33),
-                  ),
-                  onPressed: () {},
-                  child: Text(
-                    'Explore',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
+            child: Text(
+              'Cook the best\nrecipes at home',
+              style: TextStyle(
+                height: 1.1,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
           ),
           Positioned(
