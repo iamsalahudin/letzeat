@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:letzeat/utils/constant.dart';
+import 'package:letzeat/widgets/universal_image.dart';
 
 class MealPlan extends StatefulWidget {
   const MealPlan({super.key});
@@ -150,14 +151,18 @@ class _MealPlanState extends State<MealPlan> {
                         itemBuilder: (context, index) {
                           final doc = filteredRecipes[index];
                           final docMap = doc.data();
+                          final imageUrl =
+                              (docMap['img_url'] ?? '').toString().trim();
+                          print('Image URL: ' + imageUrl);
                           return ListTile(
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                docMap['img_url'],
+                              child: UniversalImage(
+                                imageUrl: imageUrl,
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             title: Text(docMap['name']),
@@ -242,11 +247,13 @@ class _MealPlanState extends State<MealPlan> {
                                             borderRadius: BorderRadius.circular(
                                               8,
                                             ),
-                                            child: Image.network(
-                                              recipe['img_url'],
+                                            child: UniversalImage(
+                                              imageUrl: recipe['img_url'],
                                               width: 50,
                                               height: 50,
                                               fit: BoxFit.cover,
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
                                           )
                                           : const Icon(
