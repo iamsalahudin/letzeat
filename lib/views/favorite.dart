@@ -22,6 +22,7 @@ class _FavoriteState extends State<Favorite> {
         backgroundColor: kBackgroundColor,
         centerTitle: true,
         title: Text('Favorites', style: TextStyle(fontWeight: FontWeight.bold)),
+        automaticallyImplyLeading: false,
       ),
       body:
           favoriteItems.isEmpty
@@ -147,7 +148,7 @@ class _FavoriteState extends State<Favorite> {
                                       color: Colors.red,
                                     ),
                                     onPressed: () {
-                                      provider.toggleFavorite(favoriteItem);
+                                      provider.toggleFavorite(favoriteItem.id);
                                     },
                                   ),
                                 ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:letzeat/provider/fav_provider.dart';
 import 'package:letzeat/provider/quantity.dart';
-import 'package:letzeat/views/main_app.dart';
+import 'package:letzeat/views/signup.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -13,8 +13,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
-
-// This widget is the root of your application.
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,7 +26,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: MainApp(),
+        home: SignupPage(),
       ),
     );
   }

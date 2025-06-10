@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:letzeat/utils/constant.dart';
+import 'package:letzeat/views/login.dart';
 import 'package:letzeat/views/search_items.dart';
 import 'package:letzeat/views/view_all_items.dart';
 import 'package:letzeat/widgets/banner.dart';
@@ -219,10 +221,30 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Text headerParts() {
-    return Text(
-      'What are you\ncooking today?',
-      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, height: 1),
+  Row headerParts() {
+    return Row(
+      children: [
+        Text(
+          'What are you\ncooking today?',
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            height: 1,
+          ),
+        ),
+        Spacer(),
+        IconButton(
+          icon: Icon(Iconsax.logout, color: Colors.grey.shade600),
+          tooltip: 'Logout',
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const LoginPage()),
+              (route) => false, // This removes all previous routes
+            );
+          },
+        ),
+      ],
     );
   }
 }

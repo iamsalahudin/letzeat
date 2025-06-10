@@ -287,14 +287,14 @@ class _RecipeDetailState extends State<RecipeDetail> {
   FloatingActionButton startCookingSection(FavoriteProvider provider) {
     return FloatingActionButton(
       onPressed: () {
-        provider.toggleFavorite(widget.documentSnapshot);
+        provider.toggleFavorite(widget.documentSnapshot.id);
       },
       child: Icon(
-        provider.isFavorite(widget.documentSnapshot)
+        provider.isFavorite(widget.documentSnapshot.id)
             ? Iconsax.heart5
             : Iconsax.heart,
         color:
-            provider.isFavorite(widget.documentSnapshot)
+            provider.isFavorite(widget.documentSnapshot.id)
                 ? Colors.redAccent
                 : Colors.black,
       ),

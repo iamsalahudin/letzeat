@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:letzeat/utils/constant.dart';
 
@@ -22,19 +23,12 @@ class _MealPlanState extends State<MealPlan> {
 
   final List<String> dailyMeals = ['Breakfast', 'Lunch', 'Dinner'];
 
-  // Each day maps to a map of meal type to a recipe map (or null)
   Map<String, Map<String, Map<String, dynamic>?>> mealPlan = {};
-
-  // All available recipes from Firestore
   List<DocumentSnapshot> allRecipes = [];
-
-  // All available meal plans from Firestore
-  List<Map<String, dynamic>> savedMealPlans = [];
 
   bool _isLoading = false;
   bool _isSaving = false;
 
-  // Only one meal plan in the database, always load the latest on page visit
   @override
   void initState() {
     super.initState();
@@ -42,14 +36,12 @@ class _MealPlanState extends State<MealPlan> {
       mealPlan[day] = {for (var meal in dailyMeals) meal: null};
     }
     fetchRecipes();
-    fetchAndLoadLatestMealPlan();
+    fetchMealPlanByUser();
   }
 
   Future<void> fetchRecipes() async {
-    setState(() {
-      _isLoading = true;
-    });
-    QuerySnapshot snapshot =
+    setState(() => _isLoading = true);
+    final snapshot =
         await FirebaseFirestore.instance.collection('recipes').get();
     setState(() {
       allRecipes = snapshot.docs;
@@ -57,81 +49,22 @@ class _MealPlanState extends State<MealPlan> {
     });
   }
 
-  Future<void> fetchAndLoadLatestMealPlan() async {
-    setState(() {
-      _isLoading = true;
-    });
-    final snapshot =
-        await FirebaseFirestore.instance
-            .collection('meal_plans')
-            .orderBy('createdAt', descending: true)
-            .limit(1)
-            .get();
-    if (snapshot.docs.isNotEmpty) {
-      final plan = snapshot.docs.first.data()['plan'] as Map<String, dynamic>;
-      _loadMealPlan(plan);
+  Future<void> fetchMealPlanByUser() async {
+    setState(() => _isLoading = true);
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+
+    if (uid != null) {
+      final doc =
+          await FirebaseFirestore.instance
+              .collection('meal_plans')
+              .doc(uid)
+              .get();
+      if (doc.exists && doc.data()?['plan'] != null) {
+        _loadMealPlan(doc['plan']);
+      }
     }
-    setState(() {
-      _isLoading = false;
-    });
-  }
 
-  void _addMeal(String day, String mealType) async {
-    // Set the category to the mealType (e.g., 'Breakfast', 'Lunch', 'Dinner')
-    String selectedCategory = mealType;
-    // Fetch filtered recipes for the selected meal type
-    setState(() { _isLoading = true; });
-    QuerySnapshot filteredRecipesSnapshot = await FirebaseFirestore.instance
-        .collection('recipes')
-        .where('category', isEqualTo: selectedCategory)
-        .get();
-    setState(() { _isLoading = false; });
-    final filteredRecipes = filteredRecipesSnapshot.docs;
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Select a recipe for $mealType on $day'),
-          content: SizedBox(
-            height: 300,
-            width: double.maxFinite,
-            child: filteredRecipes.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(color: kPrimaryColor),
-                  )
-                : ListView.builder(
-                    itemCount: filteredRecipes.length,
-                    itemBuilder: (context, index) {
-                      final doc = filteredRecipes[index];
-                      final docMap = doc.data() as Map<String, dynamic>;
-                      return ListTile(
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            docMap['img_url'],
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        title: Text(docMap['name']),
-                        onTap: () {
-                          setState(() {
-                            mealPlan[day]![mealType] = {
-                              ...docMap,
-                              'recipeId': doc.id,
-                            };
-                          });
-                          Navigator.pop(context);
-                        },
-                      );
-                    },
-                  ),
-          ),
-        );
-      },
-    );
+    setState(() => _isLoading = false);
   }
 
   void _loadMealPlan(Map<String, dynamic> plan) {
@@ -139,58 +72,109 @@ class _MealPlanState extends State<MealPlan> {
       for (final day in weekDays) {
         for (final mealType in dailyMeals) {
           final meal = plan[day]?[mealType];
-          if (meal != null) {
-            mealPlan[day]![mealType] = Map<String, dynamic>.from(meal);
-          } else {
-            mealPlan[day]![mealType] = null;
-          }
+          mealPlan[day]![mealType] =
+              meal != null ? Map<String, dynamic>.from(meal) : null;
         }
       }
     });
   }
 
-  // Save the meal plan to Firestore in a new collection
   Future<void> _saveMealPlanToDatabase() async {
-    setState(() {
-      _isSaving = true;
-    });
+    setState(() => _isSaving = true);
+
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("User not logged in")));
+      setState(() => _isSaving = false);
+      return;
+    }
+
     final mealPlanData = <String, dynamic>{};
     for (final day in weekDays) {
       mealPlanData[day] = {};
       for (final mealType in dailyMeals) {
         final recipe = mealPlan[day]![mealType];
-        if (recipe != null) {
-          mealPlanData[day][mealType] = {
-            'recipeId': recipe['recipeId'],
-            'name': recipe['name'],
-            'img_url': recipe['img_url'],
-          };
-        } else {
-          mealPlanData[day][mealType] = null;
-        }
+        mealPlanData[day][mealType] =
+            recipe != null
+                ? {
+                  'recipeId': recipe['recipeId'],
+                  'name': recipe['name'],
+                  'img_url': recipe['img_url'],
+                }
+                : null;
       }
     }
-    // Remove all previous plans and add only the latest
-    final batch = FirebaseFirestore.instance.batch();
-    final plansSnapshot =
-        await FirebaseFirestore.instance.collection('meal_plans').get();
-    for (final doc in plansSnapshot.docs) {
-      batch.delete(doc.reference);
-    }
-    final newDoc = FirebaseFirestore.instance.collection('meal_plans').doc();
-    batch.set(newDoc, {
-      'createdAt': FieldValue.serverTimestamp(),
+
+    await FirebaseFirestore.instance.collection('meal_plans').doc(uid).set({
       'plan': mealPlanData,
     });
-    await batch.commit();
-    setState(() {
-      _isSaving = false;
-    });
+
+    setState(() => _isSaving = false);
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Meal plan saved to database!'),
+        content: Text('Meal plan saved!'),
         backgroundColor: Colors.green,
       ),
+    );
+  }
+
+  void _addMeal(String day, String mealType) async {
+    setState(() => _isLoading = true);
+
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('recipes')
+            .where('category', isEqualTo: mealType)
+            .get();
+
+    final filteredRecipes = snapshot.docs;
+
+    setState(() => _isLoading = false);
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text('Select a recipe for $mealType on $day'),
+            content: SizedBox(
+              height: 300,
+              width: 300, // Use a fixed width instead of double.infinity
+              child:
+                  filteredRecipes.isEmpty
+                      ? const Center(child: Text("No recipes found"))
+                      : ListView.builder(
+                        itemCount: filteredRecipes.length,
+                        itemBuilder: (context, index) {
+                          final doc = filteredRecipes[index];
+                          final docMap = doc.data();
+                          return ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                docMap['img_url'],
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            title: Text(docMap['name']),
+                            onTap: () {
+                              setState(() {
+                                mealPlan[day]![mealType] = {
+                                  ...docMap,
+                                  'recipeId': doc.id,
+                                };
+                              });
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                      ),
+            ),
+          ),
     );
   }
 
@@ -201,7 +185,7 @@ class _MealPlanState extends State<MealPlan> {
         Scaffold(
           appBar: AppBar(
             title: const Text('Weekly Meal Plan'),
-            titleTextStyle: TextStyle(
+            titleTextStyle: const TextStyle(
               color: Colors.white,
               fontSize: 25,
               fontWeight: FontWeight.bold,
@@ -209,11 +193,11 @@ class _MealPlanState extends State<MealPlan> {
             backgroundColor: kBannerColor,
             actions: [
               IconButton(
-                icon: const Icon(Icons.save),
-                tooltip: 'Save Meal Plan',
+                icon: const Icon(Icons.save, color: Colors.white),
                 onPressed: _isSaving ? null : _saveMealPlanToDatabase,
               ),
             ],
+            automaticallyImplyLeading: false,
           ),
           body:
               _isLoading
@@ -240,60 +224,51 @@ class _MealPlanState extends State<MealPlan> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    day,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                day,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(height: 8),
-                              Column(
-                                children:
-                                    dailyMeals.map((mealType) {
-                                      final recipe = meals[mealType];
-                                      return ListTile(
-                                        contentPadding: EdgeInsets.zero,
-                                        leading:
-                                            recipe != null
-                                                ? ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  child: Image.network(
-                                                    recipe['img_url'],
-                                                    width: 50,
-                                                    height: 50,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                )
-                                                : const Icon(
-                                                  Icons.fastfood,
-                                                  color: Colors.grey,
-                                                ),
-                                        title: Text(mealType),
-                                        subtitle:
-                                            recipe != null
-                                                ? Text(recipe['name'])
-                                                : const Text(
-                                                  'No meal selected',
-                                                ),
-                                        trailing: IconButton(
-                                          icon: Icon(
-                                            recipe == null
-                                                ? Icons.add_circle
-                                                : Icons.edit,
-                                            color: kBannerColor,
+                              ...dailyMeals.map((mealType) {
+                                final recipe = meals[mealType];
+                                return ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading:
+                                      recipe != null
+                                          ? ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            child: Image.network(
+                                              recipe['img_url'],
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                          : const Icon(
+                                            Icons.fastfood,
+                                            color: Colors.grey,
                                           ),
-                                          onPressed:
-                                              () => _addMeal(day, mealType),
-                                        ),
-                                      );
-                                    }).toList(),
-                              ),
+                                  title: Text(mealType),
+                                  subtitle:
+                                      recipe != null
+                                          ? Text(recipe['name'])
+                                          : const Text('No meal selected'),
+                                  trailing: IconButton(
+                                    icon: Icon(
+                                      recipe == null
+                                          ? Icons.add_circle
+                                          : Icons.edit,
+                                      color: kBannerColor,
+                                    ),
+                                    onPressed: () => _addMeal(day, mealType),
+                                  ),
+                                );
+                              }).toList(),
                             ],
                           ),
                         ),

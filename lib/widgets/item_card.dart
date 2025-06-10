@@ -90,15 +90,15 @@ class ItemCard extends StatelessWidget {
                 backgroundColor: Colors.white,
                 child: InkWell(
                   onTap: () {
-                    provider.toggleFavorite(documentSnapshot);
+                    provider.toggleFavorite(documentSnapshot.id);
                   },
                   child: Icon(
-                    provider.isFavorite(documentSnapshot)
+                    provider.isFavorite(documentSnapshot.id)
                         ? Iconsax.heart5
                         : Iconsax.heart,
                     size: 20,
                     color:
-                        provider.isFavorite(documentSnapshot)
+                        provider.isFavorite(documentSnapshot.id)
                             ? Colors.redAccent
                             : Colors.grey,
                   ),
