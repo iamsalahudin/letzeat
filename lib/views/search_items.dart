@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:letzeat/utils/constant.dart';
 import 'package:letzeat/widgets/icon_button.dart';
-import 'package:letzeat/widgets/item_card.dart';
+import 'package:letzeat/views/item_detail.dart';
+import 'package:letzeat/widgets/universal_image.dart';
 
 class SearchItems extends StatefulWidget {
   final query;
@@ -62,42 +63,142 @@ class _SearchItemsState extends State<SearchItems> {
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.85,
+                          childAspectRatio: 0.65,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
                         ),
                         itemBuilder: (context, index) {
                           final DocumentSnapshot documentSnapshot =
                               streamSnapshot.data!.docs[index];
-                          return Column(
-                            children: [
-                              ItemCard(documentSnapshot: documentSnapshot),
-                              Row(
+                          return Card(
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(18),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => RecipeDetail(
+                                          documentSnapshot: documentSnapshot,
+                                        ),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(
-                                    Iconsax.star1,
-                                    size: 20,
-                                    color: Colors.amberAccent,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "${documentSnapshot['rating']}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(18),
+                                    ),
+                                    child: UniversalImage(
+                                      imageUrl: documentSnapshot['img_url'],
+                                      width: double.infinity,
+                                      height: 120,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                  Text(
-                                    " / 5.0",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          documentSnapshot['name'],
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 6),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Iconsax.flash_1,
+                                              size: 16,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(width: 3),
+                                            Text(
+                                              "${documentSnapshot['cal']} kcal",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Text(
+                                              "  ·  ",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w900,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Iconsax.clock,
+                                              size: 16,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(width: 3),
+                                            Text(
+                                              "${documentSnapshot['time']} min",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 6),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Iconsax.star1,
+                                              size: 16,
+                                              color: Colors.amberAccent,
+                                            ),
+                                            SizedBox(width: 3),
+                                            Text(
+                                              "${documentSnapshot['rating']}",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            Text(
+                                              " / 5.0",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Flexible(
+                                              child: Text(
+                                                "${documentSnapshot['reviews'.toString()]} Reviews",
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "${documentSnapshot['reviews'.toString()]} Reviews",
-                                    style: const TextStyle(color: Colors.grey),
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           );
                         },
                       );
