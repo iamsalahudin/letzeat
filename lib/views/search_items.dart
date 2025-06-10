@@ -62,42 +62,53 @@ class _SearchItemsState extends State<SearchItems> {
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.85,
+                          childAspectRatio: 0.65, // Keep items tall
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10,
                         ),
                         itemBuilder: (context, index) {
                           final DocumentSnapshot documentSnapshot =
                               streamSnapshot.data!.docs[index];
-                          return Column(
-                            children: [
-                              ItemCard(documentSnapshot: documentSnapshot),
-                              Row(
+                          return SizedBox(
+                            height: 260,
+                            child: SingleChildScrollView(
+                              child: Column(
                                 children: [
-                                  Icon(
-                                    Iconsax.star1,
-                                    size: 20,
-                                    color: Colors.amberAccent,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "${documentSnapshot['rating']}",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    " / 5.0",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "${documentSnapshot['reviews'.toString()]} Reviews",
-                                    style: const TextStyle(color: Colors.grey),
+                                  ItemCard(documentSnapshot: documentSnapshot),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Iconsax.star1,
+                                        size: 20,
+                                        color: Colors.amberAccent,
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        "${documentSnapshot['rating']}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        " / 5.0",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      Flexible(
+                                        child: Text(
+                                          "${documentSnapshot['reviews'.toString()]} Reviews",
+                                          style: const TextStyle(
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           );
                         },
                       );
