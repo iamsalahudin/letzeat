@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:letzeat/provider/fav_provider.dart';
 import 'package:letzeat/utils/constant.dart';
-import 'package:letzeat/widgets/universal_image.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({super.key});
@@ -81,13 +80,12 @@ class _FavoriteState extends State<Favorite> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       color: Colors.white,
-                                    ),
-                                    child: UniversalImage(
-                                      imageUrl: favoriteItem['img_url'],
-                                      width: 100,
-                                      height: 80,
-                                      fit: BoxFit.cover,
-                                      borderRadius: BorderRadius.circular(20),
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          favoriteItem['img_url'],
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(width: 10),

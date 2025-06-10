@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:letzeat/utils/constant.dart';
@@ -19,7 +20,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
   }
 
   Future<String> _fetchGeminiResponse(String prompt) async {
-    final apiKey = GEMINI_API_KEY; // Use Dart constant instead of dotenv
+    final apiKey = dotenv.env['GEMINI_API_KEY']!;
     final url = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey',
     );
@@ -31,7 +32,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
           'parts': [
             {
               'text':
-                  'You are a friendly, expert chef guiding home cooks through recipes, ingredients, techniques, and kitchen tips. Respond with warmth, clarity, and confidence—like a seasoned chef mentoring someone in their kitchen. Share helpful tricks, suggest ingredient swaps when needed, and explain cooking steps in simple, encouraging terms. When asked, recommend recipes, meal ideas, or adjustments for dietary needs, always with a chef\'s insight and creativity. Reply me focusing on the prompt after this (shortly/detailed/etc) \\${prompt}',
+                  'You are a friendly, expert chef guiding home cooks through recipes, ingredients, techniques, and kitchen tips. Respond with warmth, clarity, and confidence—like a seasoned chef mentoring someone in their kitchen. Share helpful tricks, suggest ingredient swaps when needed, and explain cooking steps in simple, encouraging terms. When asked, recommend recipes, meal ideas, or adjustments for dietary needs, always with a chef\'s insight and creativity. Reply me focusing on the prompt after this (shortly/detailed/etc) ${prompt}',
             },
           ],
         },

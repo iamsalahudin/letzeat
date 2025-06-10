@@ -24,57 +24,55 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          currentIndex: selectedIndex,
-          elevation: 0,
-          selectedItemColor: kPrimaryColor,
-          unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(
-            color: kPrimaryColor,
-            fontWeight: FontWeight.w600,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-          iconSize: 28,
-          type: BottomNavigationBarType.fixed,
-          onTap: (index) {
-            setState(() {
-              selectedIndex = index;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(selectedIndex == 0 ? Iconsax.home5 : Iconsax.home_1),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(selectedIndex == 1 ? Iconsax.heart5 : Iconsax.heart),
-              label: 'Favorite',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                selectedIndex == 2 ? Iconsax.calendar5 : Iconsax.calendar,
-              ),
-              label: 'Meal Plan',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                selectedIndex == 3
-                    ? Icons.chat_bubble
-                    : Icons.chat_bubble_outline,
-              ),
-              label: 'My AI',
-            ),
-          ],
+        currentIndex: selectedIndex,
+        elevation: 0,
+        selectedItemColor: kPrimaryColor,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(
+          color: kPrimaryColor,
+          fontWeight: FontWeight.w600,
         ),
-        body: page[selectedIndex],
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        iconSize: 28,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(selectedIndex == 0 ? Iconsax.home5 : Iconsax.home_1),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(selectedIndex == 1 ? Iconsax.heart5 : Iconsax.heart),
+            label: 'Favorite',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              selectedIndex == 2 ? Iconsax.calendar5 : Iconsax.calendar,
+            ),
+            label: 'Meal Plan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              selectedIndex == 3
+                  ? Icons.chat_bubble
+                  : Icons.chat_bubble_outline,
+            ),
+            label: 'My AI',
+          ),
+        ],
       ),
+      body: page[selectedIndex],
     );
   }
 
