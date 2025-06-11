@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:letzeat/provider/fav_provider.dart';
 import 'package:letzeat/views/item_detail.dart';
+import 'package:letzeat/widgets/universal_image.dart';
 
 class ItemCard extends StatelessWidget {
   final DocumentSnapshot<Object?> documentSnapshot;
@@ -32,16 +33,12 @@ class ItemCard extends StatelessWidget {
               children: [
                 Hero(
                   tag: documentSnapshot['img_url'],
-                  child: Container(
+                  child: UniversalImage(
+                    imageUrl: documentSnapshot['img_url'],
+                    fit: BoxFit.cover,
                     width: double.infinity,
                     height: 160,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                        image: NetworkImage(documentSnapshot['img_url']),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 SizedBox(height: 10),

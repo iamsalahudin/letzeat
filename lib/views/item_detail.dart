@@ -5,6 +5,7 @@ import 'package:letzeat/provider/fav_provider.dart';
 import 'package:letzeat/provider/quantity.dart';
 import 'package:letzeat/widgets/icon_button.dart';
 import 'package:letzeat/widgets/quantity.dart';
+import 'package:letzeat/widgets/universal_image.dart';
 import 'package:provider/provider.dart';
 
 class RecipeDetail extends StatefulWidget {
@@ -48,17 +49,11 @@ class _RecipeDetailState extends State<RecipeDetail> {
                 children: [
                   Hero(
                     tag: widget.documentSnapshot['img_url'],
-                    child: Container(
+                    child: UniversalImage(
+                      imageUrl: widget.documentSnapshot['img_url'],
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height * 0.48,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            widget.documentSnapshot['img_url'],
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      fit: BoxFit.cover,
                     ),
                   ),
                   Positioned(
@@ -217,9 +212,14 @@ class _RecipeDetailState extends State<RecipeDetail> {
                                             borderRadius: BorderRadius.circular(
                                               20,
                                             ),
-                                            image: DecorationImage(
-                                              image: NetworkImage(e),
-                                              fit: BoxFit.cover,
+                                          ),
+                                          child: UniversalImage(
+                                            imageUrl: e,
+                                            width: 60,
+                                            height: 60,
+                                            fit: BoxFit.cover,
+                                            borderRadius: BorderRadius.circular(
+                                              20,
                                             ),
                                           ),
                                         ),
