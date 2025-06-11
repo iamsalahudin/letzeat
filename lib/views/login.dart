@@ -58,70 +58,75 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Image.asset('assets/images/logo.png', height: 200),
-          const SizedBox(height: 20),
-          const Text(
-            'Login to Your Account',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            'Please log in to continue',
-            style: TextStyle(fontSize: 18),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextField(
-              controller: mailcontroller,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Image.asset('assets/images/logo.png', height: 200),
+              const SizedBox(height: 20),
+              const Text(
+                'Login to Your Account',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: TextField(
-              controller: passwordcontroller,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 5),
+              const Text(
+                'Please log in to continue',
+                style: TextStyle(fontSize: 18),
               ),
-            ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  controller: mailcontroller,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  controller: passwordcontroller,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (mailcontroller.text.isNotEmpty &&
+                      passwordcontroller.text.isNotEmpty) {
+                    setState(() {
+                      email = mailcontroller.text;
+                      password = passwordcontroller.text;
+                    });
+                    userlogin();
+                  }
+                },
+                child: const Text('Login'),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  // Navigate to registration page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignupPage()),
+                  );
+                },
+                child: const Text('Don\'t have an account? Register here'),
+              ),
+            ],
           ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              if (mailcontroller.text.isNotEmpty &&
-                  passwordcontroller.text.isNotEmpty) {
-                setState(() {
-                  email = mailcontroller.text;
-                  password = passwordcontroller.text;
-                });
-                userlogin();
-              }
-            },
-            child: const Text('Login'),
-          ),
-          const SizedBox(height: 10),
-          TextButton(
-            onPressed: () {
-              // Navigate to registration page
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SignupPage()),
-              );
-            },
-            child: const Text('Don\'t have an account? Register here'),
-          ),
-        ],
+        ),
       ),
     );
   }
