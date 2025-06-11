@@ -275,6 +275,24 @@ class _RecipeDetailState extends State<RecipeDetail> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 20),
+                  Column(
+                    children: [
+                      Text(
+                        "Instructions",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "${widget.documentSnapshot['instructions']}",
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 70),
                 ],
               ),
             ),
@@ -286,6 +304,7 @@ class _RecipeDetailState extends State<RecipeDetail> {
 
   FloatingActionButton startCookingSection(FavoriteProvider provider) {
     return FloatingActionButton(
+      backgroundColor: Colors.white,
       onPressed: () {
         provider.toggleFavorite(widget.documentSnapshot.id);
       },
