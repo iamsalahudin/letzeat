@@ -154,11 +154,12 @@ class _MealPlanState extends State<MealPlan> {
                           return ListTile(
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                docMap['img_url'],
+                              child: UniversalImage(
+                                imageUrl: docMap['img_url'],
                                 width: 50,
                                 height: 50,
                                 fit: BoxFit.cover,
+                                borderRadius: BorderRadius.circular(8),
                               ),
                             ),
                             title: Text(docMap['name']),
